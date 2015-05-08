@@ -7,7 +7,7 @@
 /** TODO
  * 1) check to make sure enough arguments exist before converting.
  * 2) 
-
+**/
 int eval(char *buffer);
 
 //Commands
@@ -32,33 +32,69 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
+char delim[] = " \n";
+int get_uint_arg(unsigned int *arg) {
+	char *tmp;
+	if((tmp = strtok(NULL, delim)) == NULL) {
+		printf("Not enough arguments!\n");
+		return -1;
+	}
+	
+	*arg = atoi(tmp);
+	return 0;
+}
+
+int get_char_arg(char *arg) {
+	char *tmp;
+	if((tmp = strtok(NULL, delim)) == NULL) {
+		printf("Not enough arguments!\n");
+		return -1;
+	}
+
+	*arg = tmp[0];
+	return 0;
+}
+
 int eval(char *buffer) {
 	char delim[] = " \n";
+	char *arg;
 	char *cmd = strtok(buffer, delim);
-	//NOTE: perhaps check to make sure strtok doesn't return NULL.
+	
 	if(strcmp(cmd, "allocate") == 0) {
-		unsigned int size = atoi(strtok(NULL, delim));
+		unsigned int size;
+		if(get_uint_arg(&size) < 0) {
+			return 0;
+		}
 		cmd_allocate(size);
 	} else if(strcmp(cmd, "free") == 0) {
-		unsigned int block_num = atoi(strtok(NULL, delim));
+		unsigned int block_num;
+		if(get_uint_arg(&block_num) < 0) {
+			return 0;
+		}
 		cmd_free(block_num);
 	} else if(strcmp(cmd, "blocklist") == 0) {
 		cmd_block_list();
 	} else if(strcmp(cmd, "writeheap") == 0) {
-		unsigned int block_num = atoi(strtok(NULL, delim));
-		char to_write = strtok(NULL, delim)[0];
-		unsigned int num_copies = atoi(strtok(NULL, delim));
+		unsigned int block_num;
+		char to_write;
+		unsigned int num_copies;
+		if(get_uint_arg(&block_num) < 0 || get_char_arg(&to_write) < 0 || get_uint_arg(&num_copies) < 0) {
+			return 0;
+		}
 		cmd_write_heap(block_num, to_write, num_copies);
 	} else if(strcmp(cmd, "printheap") == 0) {
-		unsigned int block_num = atoi(strtok(NULL, delim));
-		unsigned int num_chars = atoi(strtok(NULL, delim));
+		unsigned int block_num;
+		unsigned int num_chars;
+		if(get_uint_arg(&block_num) < 0 || get_uint_arg(&num_chars) < 0) {
+			return 0;
+		}
 		cmd_print_heap(block_num, num_chars);
 	} else if(strcmp(cmd, "bestfit") == 0) {
 		printf("using bestfit\n");
 	} else if(strcmp(cmd, "firstfit") == 0) {
 		printf("using firstfit\n");
 	} else if(strcmp(cmd, "quit") == 0) {
-		//NOTE: cleanup?
+		//TODO: cleanup?
 		exit(0);
 	} else {
 		printf("Please enter a valid command.\n");
