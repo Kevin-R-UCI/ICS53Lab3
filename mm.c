@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include "mm.h"
 #include "memlib.h"
@@ -303,21 +304,30 @@ static void *first_fit(size_t asize)
 			return bp;
 		}
 	}
-	return NULL; /* No fit */
-	/* $end mmfirstfit */
-}
-
-static void *best_fit(size_t asize) {
 	return NULL;
 }
 
-static int use_first_fit = FIRST_FIT;
+static void *best_fit(size_t asize) {
+	/* Best fit search */
+	void *bp;
+	void *bf = NULL;
+	int minimum = INT_MAX;
+	for (bp = heap_listp; GET_SIZE(HDRP(bp)) > 0; bp = NEXT_BLKP(bp)) {
+		if(asize <= GET_SIZE(HDRP(bp)) && GET_SIZE(HDRP(bp)) < minimum) {
+			minimum = GET_SIZE(HDRP(bp));
+			bf = bp;
+		}
+	}
+	return bf;
+}
+
+static int use_fit = FIRST_FIT;
 static void *find_fit(size_t asize) {
-	return (use_first_fit ? first_fit(asize) : best_fit(asize));
+	return (use_fit == FIRST_FIT ? first_fit(asize) : best_fit(asize));
 }
 
 void change_fit(int fit) {
-	use_first_fit = fit;
+	use_fit = fit;
 }
 
 static void printblock(void *bp) 
