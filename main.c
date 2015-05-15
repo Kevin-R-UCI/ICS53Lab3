@@ -6,12 +6,6 @@
 #include "memlib.h"
 #include "mm.h"
 
-/* TODO:
- * 1) Toggling between bestfit/firstfit
- * 2) Implementation of bestfit
- * 3) Code review
- */
-
 int eval(char *buffer);
 
 //Commands
@@ -134,12 +128,19 @@ void extend_block_nums() {
 }
 
 void cmd_allocate(unsigned int size) {
+	if(size == 0) {
+		printf("Please supply a positive integer size!\n");
+		return;
+	}
 	if(block_nums_size <= next_block_num) {
 		extend_block_nums();
 	}
 
-	block_num_to_addr[next_block_num++] = mm_malloc(size);
-	printf("%d\n", next_block_num);
+	if((block_num_to_addr[next_block_num] = mm_malloc(size)) == NULL) {
+		printf("Block of size %u could not be found\n", size);
+	} else {
+		printf("%d\n", ++next_block_num);
+	}
 }
 
 void cmd_free(unsigned int block_num) {
