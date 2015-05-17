@@ -163,7 +163,7 @@ void cmd_write_heap(unsigned int block_num, char to_write, unsigned num_copies) 
 		printf("Writing to unallocated block not allowed.\n");
 		return;
 	}
-	char *loc = (char*)(block_num_to_addr[--block_num]);
+	char *loc = (char*)(block_num_to_addr[block_num]);
 	for(unsigned int i = 0; i < num_copies; ++i) {
 		loc[i] = to_write;
 	}
@@ -174,7 +174,7 @@ void cmd_print_heap(unsigned int block_num, unsigned int num_chars) {
 		printf("Block not allocated.\n");
 		return;
 	} 
-	char *loc = (char*)(block_num_to_addr[--block_num]);
+	char *loc = (char*)(block_num_to_addr[block_num]);
 	for(unsigned int i = 0; i < num_chars; ++i) {
 		printf("%c", loc[i]);
 	}

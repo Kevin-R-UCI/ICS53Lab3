@@ -313,7 +313,7 @@ static void *best_fit(size_t asize) {
 	void *bf = NULL;
 	int minimum = INT_MAX;
 	for (bp = heap_listp; GET_SIZE(HDRP(bp)) > 0; bp = NEXT_BLKP(bp)) {
-		if(asize <= GET_SIZE(HDRP(bp)) && GET_SIZE(HDRP(bp)) < minimum) {
+		if(asize <= GET_SIZE(HDRP(bp)) && GET_SIZE(HDRP(bp)) < minimum && !GET_ALLOC(HDRP(bp))) {
 			minimum = GET_SIZE(HDRP(bp));
 			bf = bp;
 		}
