@@ -386,7 +386,7 @@ void checkheap(int verbose)
 
 void blocklist() {
 	printf("Size\tAllocated\tStart\t\tEnd\n");
-	for(char *bp = heap_listp; GET_SIZE(HDRP(bp)) > 0; bp = NEXT_BLKP(bp)) {
+	for(char *bp = NEXT_BLKP(heap_listp); GET_SIZE(HDRP(bp)) > 0; bp = NEXT_BLKP(bp)) {
 		printf("%d\t%s\t\t0x%x\t0x%x\n", GET_SIZE(HDRP(bp)), (GET_ALLOC(HDRP(bp)) ? "yes" : "no"), bp, bp + GET_SIZE(HDRP(bp)));	
 	}
 }
